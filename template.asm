@@ -90,7 +90,7 @@ LoadSprites:
     CPX #$20 ; 32 memory addresses to load
     BNE LoadSprites
 
-; Enable interrupts
+    ; Enable interrupts
     CLI
 
     LDA #%10010000 ; enable NMI, and set background table address to $1000
@@ -106,6 +106,120 @@ NMI:
     ; Copy sprite data from $0200 into PPU memory for display
     LDA #$02
     STA $4014 ; OAM DMA register
+
+LatchController:
+    LDA #$01
+    STA $4016
+    LDA #$00
+    STA $4016 ; tell both the controllers to latch buttons
+
+ReadControllerOne:
+    LDA $4016     ; player 1 - A
+    LDA $4016     ; player 1 - B
+    LDA $4016     ; player 1 - Select
+    LDA $4016     ; player 1 - Start
+
+ReadUp:
+    LDA $4016     ; player 1 - Up
+    AND #%00000001
+    BEQ ReadUpDone
+
+    LDA $0204
+    SEC
+    SBC #$01
+    STA $0204
+
+ReadUpDone:
+
+ReadDown:
+    LDA $4016     ; player 1 - Down
+    AND #%00000001
+    BEQ ReadDownDone
+
+    LDA $0204
+    CLC
+    ADC #$01
+    STA $0204
+
+ReadDownDone:
+
+ReadLeft:
+    LDA $4016     ; player 1 - Left
+    AND #%00000001
+    BEQ ReadLeftDone
+
+    LDA $0207
+    SEC         ; make sure carry flag is set
+    SBC #$01    ; A = A - 1
+    STA $0207
+
+ReadLeftDone:
+
+ReadRight:
+    LDA $4016     ; player 1 - Right
+    AND #%00000001
+    BEQ ReadRightDone
+
+    LDA $0207   ; load sprite X (horizontal) position
+    CLC         ; make sure the carry flag is clear
+    ADC #$01    ; A = A + 1
+    STA $0207   ; save sprite X (horizontal) position
+
+ReadRightDone:
+
+ReadControllerTwo:
+    LDA $4017     ; player 1 - A
+    LDA $4017     ; player 1 - B
+    LDA $4017     ; player 1 - Select
+    LDA $4017     ; player 1 - Start
+
+ReadUpTwo:
+    LDA $4017     ; player 1 - Up
+    AND #%00000001
+    BEQ ReadUpDoneTwo
+
+    LDA $0200
+    SEC
+    SBC #$01
+    STA $0200
+
+ReadUpDoneTwo:
+
+ReadDownTwo:
+    LDA $4017     ; player 1 - Down
+    AND #%00000001
+    BEQ ReadDownDoneTwo
+
+    LDA $0200
+    CLC
+    ADC #$01
+    STA $0200
+
+ReadDownDoneTwo:
+
+ReadLeftTwo:
+    LDA $4017     ; player 1 - Left
+    AND #%00000001
+    BEQ ReadLeftDoneTwo
+
+    LDA $0203
+    SEC         ; make sure carry flag is set
+    SBC #$01    ; A = A - 1
+    STA $0203
+
+ReadLeftDoneTwo:
+
+ReadRightTwo:
+    LDA $4017     ; player 1 - Right
+    AND #%00000001
+    BEQ ReadRightDoneTwo
+
+    LDA $0203   ; load sprite X (horizontal) position
+    CLC         ; make sure the carry flag is clear
+    ADC #$01    ; A = A + 1
+    STA $0203   ; save sprite X (horizontal) position
+
+ReadRightDoneTwo:
 
     RTI
 
