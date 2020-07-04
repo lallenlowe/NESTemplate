@@ -114,10 +114,10 @@ LatchController:
     STA $4016 ; tell both the controllers to latch buttons
 
 ReadControllerOne:
-    LDA $4016     ; player 1 - A
-    LDA $4016     ; player 1 - B
-    LDA $4016     ; player 1 - Select
-    LDA $4016     ; player 1 - Start
+    BIT $4016     ; player 1 - A
+    BIT $4016     ; player 1 - B
+    BIT $4016     ; player 1 - Select
+    BIT $4016     ; player 1 - Start
 
 ReadUp:
     LDA $4016     ; player 1 - Up
@@ -168,10 +168,10 @@ ReadRight:
 ReadRightDone:
 
 ReadControllerTwo:
-    LDA $4017     ; player 1 - A
-    LDA $4017     ; player 1 - B
-    LDA $4017     ; player 1 - Select
-    LDA $4017     ; player 1 - Start
+    BIT $4017     ; player 1 - A
+    BIT $4017     ; player 1 - B
+    BIT $4017     ; player 1 - Select
+    BIT $4017     ; player 1 - Start
 
 ReadUpTwo:
     LDA $4017     ; player 1 - Up
